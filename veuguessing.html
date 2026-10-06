@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+
+
+    <div id="app">
+        <div
+            class="w-full flex justify-center min-h-screen h-fit bg-blue-50 bg-[url('https://images.unsplash.com/photo-1570284613060-766c33850e00?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center">
+            <div class="mt-20 p-5">
+
+                <div class="text-7xl text-center text-blue-100 font-black mb-20">
+                    <h1>
+                        {{display.join(" ")}}
+                    </h1>
+                </div>
+                <div v-for="(row, i) in letters" :key="i" class="flex  justify-center gap-2 mb-2">
+                    <div v-for="letter in row" :key="letter" @click="press(letter)" 
+                    :class="['border duration-200 border-[3px] hover:border-gray-50 bg-linear-to-br from-blue-200 via-blue-400 to-blue-600 hover:bg-linear-to-tr hover:from-blue-200 hover:via-blue-400 hover:to-blue-600 text-blue-50 hover:shadow-lg shadow-blue-50 border-gray-900 text-blue-950 rounded-xl font-mono font-black text-3xl p-5 hover:bg-blue-200 cursor-pointer',
+                        usedLetters.includes(letter)
+                        ? 'border border-[3px] border-gray-50 text-gray-50 bg-linear-to-tr from-blue-200/30 via-blue-400/30 to-blue-600/30 text-blue-50 shadow-lg shadow-blue-50 cursor-not-allowed'
+                        : 'bg-blue-300 cursor-pointer'
+                        ]">
+                        {{letter}}
+                    </div>
+                </div>
+                <button @click="resetGame"
+                    class="px-5  py-2 bg-blue-800 rounded-md border border-white text-blue-50">reset</button>
+                <div class="text-center text-7xl mt-10 font-mono font-bold text-blue-100">
+                    <h1>{{message}}</h1>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    letters: [
+                        ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+                        ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+                        ["Z", "X", "C", "V", "B", "N", "M"],
+                    ],
+                    display: ["_", "_", "_", "_", "_"],
+                    words: ["TIGER", "SPEED", "COLOR", "APPLE", "MELON"],
+                    usedLetters: [],
+                    randomValue: "",
+                    message: '',
+                }
+            },
+            methods: {
+                randomWords() {
+                    let random = Math.floor(Math.random() * this.words.length);
+                    return this.words[random];
+                },
+                press(letter) {
+                    if (this.usedLetters.includes(letter)) return
+                    this.usedLetters.push(letter);
+                    for (let i = 0; i < this.randomValue.length; i++) {
+                        if (this.randomValue[i] === letter) {
+                            this.display[i] = letter;
+                        }
+                    }
+                    this.isWinner();
+                },
+                isWinner() {
+                    if (this.display.join("") === this.randomValue) {
+                        this.message = 'you win!'
+                    }
+                },
+                resetGame() {
+                    this.display = ["_", "_", "_", "_", "_"];
+                    this.usedLetters = [];
+                    this.message = '';
+                    this.randomValue = this.randomWords;
+                    console.log(this.randomValue);
+                }
+            },
+            mounted() {
+                this.randomValue = this.randomWords();
+                
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
